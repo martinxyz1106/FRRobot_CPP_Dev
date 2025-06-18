@@ -1,0 +1,1 @@
+g++ -Iinclude -Iinclude/Log -Iinclude/XmlRpc -Iinclude/TcpClient -Iinclude/Base -Llib -U__MINGW32__ -UELOG_COLOR_ENABLE -o RobotTest ./src/RobotTest.cpp ./src/TcpClient/*.cpp ./src/XmlRpc/*.cpp ./src/Log/*.cpp ./src/Log/*.c ./src/Robot/*.cpp -lfairino -lws2_32 -lShlwapi
