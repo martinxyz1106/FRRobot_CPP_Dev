@@ -8,4 +8,8 @@ File Tree
 -------
 How To Build Cpp
 - Move Directory Path What package you build
-- In fr3_gripper_test Folder, Copy Txt With 'g++ ~~~' 
+- In fr3_gripper_test Folder, Copy Txt With 'g++ ~~~'
+
+Dependency
+- MinGw-64
+- Shlwapi
