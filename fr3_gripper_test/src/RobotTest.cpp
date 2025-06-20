@@ -262,13 +262,17 @@ int main(){
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     // R->send_moveJ(&Cup1_APP_J);
     // std::this_thread::sleep_for(std::chrono::seconds(1));
+    int cnt = 5;
+    while(cnt>0){
+        R->send_moveL(&Back_J, &Back_L);
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        R->open_gripper();
+        R->send_moveL(&Front_J, &Front_L);
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        R->close_gripper();
+        cnt--;
+    }
     R->send_moveL(&Back_J, &Back_L);
-    // std::this_thread::sleep_for(std::chrono::seconds(1));
-    R->open_gripper();
-    R->send_moveL(&Front_J, &Front_L);
-    // std::this_thread::sleep_for(std::chrono::seconds(1));
-    R->close_gripper();
-    
     // R->send_moveJ(&Cup_APP);
     //RobotTest R("192.168.0.11");
     //R.fr.ActGripper(1,1);
