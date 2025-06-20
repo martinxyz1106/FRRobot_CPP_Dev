@@ -56,7 +56,7 @@ public:
     errno_t open_gripper(){
         errno_t ret =0;
         int index =1;
-        int pos = 100;
+        int pos = 90;
         int vel = 100;
         int force = 100;
         int max_time = 30000;
@@ -73,7 +73,7 @@ public:
     errno_t close_gripper(){
         errno_t ret =0;
         int index =1;
-        int pos = 0;
+        int pos = 10;
         int vel = 100;
         int force = 100;
         int max_time = 30000;
@@ -101,7 +101,7 @@ public:
         * @param  [in] offset_pos  자세 오프셋 값
     */
     void send_moveJ(JointPos* j){
-       
+        int SUCCESS = 0;
         float ovl = 100.0;
         ExaxisPos exis(0.0,0.0,0.0,0.0);
         DescPose desc_pos(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -111,60 +111,20 @@ public:
         int user= 0;
         int vel =100;
         int acc =85;
+        
         uint8_t offset_flag = 0;
         DescPose offset_pos(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        // if (cmd == RobotCmd.hold){
-        //     if (par1 == RobotCmd.cup){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        //     else if (par1 == RobotCmd.ice){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        // }
-        // else if (cmd == RobotCmd.unhold){
-        //     if (par1 == RobotCmd.cup){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        //     else if (par1 == RobotCmd.ice){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        // }
-        errno_t error_check;
-        error_check = this->fr.MoveJ(j, &desc_pos, tool, user,  vel, acc, ovl, &exis, blendR, offset_flag, &offset_pos);
-        cout << "MOVE_J Check Error : " << error_check << endl; 
+        errno_t forward_result = this->fr.GetForwardKin(j, &desc_pos);
+        cout << "Forward Result : " << forward_result << endl;
+        
+        if (forward_result == SUCCESS){
+            errno_t error_check;
+            cout << desc_pos.tran.x << ' ' <<desc_pos.tran.y << ' ' <<desc_pos.tran.z << endl; 
+            error_check = this->fr.MoveJ(j, &desc_pos, tool, user,  vel, acc, ovl, &exis, blendR, offset_flag, &offset_pos);
+            cout << "MOVE_J Check Error : " << error_check << endl; 
+        }
     }
+       
     /**
      * @brief  데카르트 공간 직선 운동
      * @param  [in] joint_pos  목표 관절 위치, 단위: deg
@@ -182,73 +142,36 @@ public:
      * @param  [in] overSpeedStrategy  과속 처리 전략, 1-표준; 2-과속 시 오류 발생 후 정지; 3-자동 감속, 기본값 0
      * @param  [in] speedPercent  허용 감속 임계값 백분율 [0-100], 기본값 10%
     */
-    void send_moveL(JointPos *j, DescPose* d){
+    void send_moveL(DescPose* d){
         float ovl = 100.0;
         ExaxisPos exis(0.0,0.0,0.0,0.0);
         // DescPose desc_pos(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        // JointPos joint_pos(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        JointPos* joint_pos;
+        memset(joint_pos,0, sizeof(JointPos*));
+        int SUCCESS = 0;
         float blendR=20.0;
         int tool =1;
         int user= 0;
         int vel =100;
         int acc =85;
+
         uint8_t offset_flag = 0;
         DescPose offset_pos(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         int overSpeedStrategy = 1;
         int speedPercent= 10;
         uint8_t search = 0;
-        // if (cmd == RobotCmd.hold){
-        //     if (par1 == RobotCmd.cup){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        //     else if (par1 == RobotCmd.ice){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        // }
-        // else if (cmd == RobotCmd.unhold){
-        //     if (par1 == RobotCmd.cup){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        //     else if (par1 == RobotCmd.ice){
-        //         if(par2 == RobotCmd.par_1){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //         else if(par2 == RobotCmd.par_2){
-        //             joint_pos.jPos[0] = 0.1;
-        //         }
-        //         else if(par2 == RobotCmd.par_3){
-        //             joint_pos.jPos[0] = 0.0;
-        //         }
-        //     }
-        // }
-        errno_t error_check;
-        // JointPos *joint_pos, DescPose *desc_pos, int tool, int user, float vel, float acc, float ovl, float blendR, ExaxisPos *epos, uint8_t search, uint8_t offset_flag, DescPose *offset_pos, int overSpeedStrategy, int speedPercent)
-        error_check = this->fr.MoveL(j, d, tool, user,  vel, acc, ovl, blendR, &exis,search, offset_flag, &offset_pos, overSpeedStrategy, speedPercent);
-        cout << "MOVE_L Check : " << error_check << endl;    
+        int config = -1;
+        errno_t inverse_result = this->fr.GetInverseKin(user,d,config, joint_pos);
+        cout << "Inverse Result : " << inverse_result << endl;
+        cout << d->tran.x << ' ' <<d->tran.y << ' ' <<d->tran.z << endl; 
+        
+        if (inverse_result == SUCCESS){
+            errno_t error_check;
+            cout << joint_pos->jPos[0] << ' ' <<joint_pos->jPos[1] << ' ' <<joint_pos->jPos[2] << ' ' <<joint_pos->jPos[3]<<  ' ' <<joint_pos->jPos[4] <<  ' ' <<joint_pos->jPos[5] << endl;
+            // JointPos *joint_pos, DescPose *desc_pos, int tool, int user, float vel, float acc, float ovl, float blendR, ExaxisPos *epos, uint8_t search, uint8_t offset_flag, DescPose *offset_pos, int overSpeedStrategy, int speedPercent)
+            error_check = this->fr.MoveL(joint_pos, d, tool, user,  vel, acc, ovl, blendR, &exis,search, offset_flag, &offset_pos, overSpeedStrategy, speedPercent);
+            cout << "MOVE_L Check : " << error_check << endl;    
+        }
     }
 };
 
@@ -256,18 +179,30 @@ int main(){
     RobotTest* R = new RobotTest("192.168.58.2");
     JointPos Front_J(2.235,-86.579,-78.189,-195.23,-87.765, -0.0);
     JointPos Back_J(5.803, -60.054, -95.343, -204.6, -84.197, 0.0);
+
     DescPose Front_L(483.5, -93.3, 380.5, 90.0, 0.0, 90.0);
     DescPose Back_L(353.1, -93.314, 380.5, 90.0, 0.0,90.0);
     // R->send_moveJ(&Cup_APP);
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     // R->send_moveJ(&Cup1_APP_J);
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    R->send_moveL(&Back_J, &Back_L);
+    // cout << Front_L.tran.x << ' ' << Front_L.tran.y << ' ' << Front_L.tran.z << endl; 
+    // R->open_gripper();
+    // R->close_gripper();
+    int cnt = 5;
+    while (cnt>0){
+        R->send_moveL(&Back_L);
+    
+        R->send_moveL(&Front_L);
+        cnt--;
+    }
+    R->send_moveL(&Back_L);
+    
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    R->open_gripper();
-    R->send_moveL(&Front_J, &Front_L);
+    // R->close_gripper();
+    
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    R->close_gripper();
+    
     
     // R->send_moveJ(&Cup_APP);
     //RobotTest R("192.168.0.11");
