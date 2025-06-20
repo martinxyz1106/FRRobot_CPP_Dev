@@ -64,7 +64,7 @@ public:
         double rotNum = 0;
         int rotVel = 0;
         int rotTorque = 0;
-        uint8_t block = 1;
+        uint8_t block = 0;
         ret = fr.MoveGripper(index, pos, vel, force, max_time, block, type_, rotNum, rotVel, rotTorque);
 
         cout << "Open Gripper Result : " << ret << endl;
@@ -81,7 +81,7 @@ public:
         double rotNum = 0;
         int rotVel = 0;
         int rotTorque = 0;
-        uint8_t block = 1;
+        uint8_t block = 0;
         ret = fr.MoveGripper(index, pos, vel, force, max_time, block, type_, rotNum, rotVel, rotTorque);
 
         cout << "Close Gripper Result : " << ret << endl;
@@ -189,15 +189,22 @@ int main(){
     // cout << Front_L.tran.x << ' ' << Front_L.tran.y << ' ' << Front_L.tran.z << endl; 
     // R->open_gripper();
     // R->close_gripper();
-    int cnt = 5;
-    while (cnt>0){
+    try{
+        int cnt = 5;
+        while (cnt>0){
+            // 
+            R->send_moveL(&Back_L);
+            R->open_gripper();
+            
+            R->send_moveL(&Front_L);
+            R->close_gripper();
+            cnt--;
+        }
         R->send_moveL(&Back_L);
-    
-        R->send_moveL(&Front_L);
-        cnt--;
     }
-    R->send_moveL(&Back_L);
-    
+    catch (const std::exception& e){
+        std::cout << "예외 발생: " << e.what() << std::endl;
+    }
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     // R->close_gripper();
     
