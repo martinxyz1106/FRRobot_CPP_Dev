@@ -263,8 +263,17 @@ int main(){
     // JointPos Back_J(5.803, -60.054, -95.343, -204.6, -84.197, 0.0);
     JointPos Back_J;
     JointPos Front_J;
+    JointPos p1;
+    JointPos p2;
+    JointPos p3;
+    JointPos p4;
+    JointPos p5;
+    JointPos p6;
+    
     DescPose Front_L(483.5, -93.3, 380.5, 90.0, 0.0, 90.0);
     DescPose Back_L(353.1, -93.314, 380.5, 90.0, 0.0,90.0);
+    DescPose L1(628.672, -44.110, 287.558, 82.581, 0.006, 95.421);
+    DescPose L2(391.613, -65.577, 431.151, 84.293, -0.001, 95.424);
     // R->send_moveJ(&Cup_APP);
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     // R->send_moveJ(&Cup1_APP_J);
@@ -273,17 +282,18 @@ int main(){
     int type = 0;
     int config = -1;
     while(cnt>0){
-        R->GetInverse(&Back_J, &Back_L);
-        R->send_moveL(&Back_J, &Back_L);
+        R->GetInverse(&p1, &L1);
+        R->send_moveL(&p1, &L1);
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         R->open_gripper();
-        R->GetInverse(&Front_J, &Front_L);
-        R->send_moveL(&Front_J, &Front_L);
+        R->GetInverse(&p2, &L2);
+        R->send_moveL(&p2, &L2);
         
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         R->close_gripper();
         cnt--;
     }
+    R->GetInverse(&Back_J, &Back_L);
     R->send_moveL(&Back_J, &Back_L);
     // R->send_moveJ(&Cup_APP);
     //RobotTest R("192.168.0.11");
