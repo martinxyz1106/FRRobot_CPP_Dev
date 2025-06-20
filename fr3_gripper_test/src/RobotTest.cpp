@@ -36,6 +36,11 @@ public:
         this->fr.GetSDKVersion(version);
         cout << "Robot Version : " << version << endl;
     }
+    void GetInverse(JointPos *j, DescPose* d){
+        int type = 0;
+        int config = -1;
+        fr.GetInverseKin(type,d,config,j);
+    }
     errno_t base_gripper(){
         errno_t ret =0;
         int index =1;
@@ -254,8 +259,10 @@ public:
 
 int main(){
     RobotTest* R = new RobotTest("192.168.58.2");
-    JointPos Front_J(2.235,-86.579,-78.189,-195.23,-87.765, -0.0);
-    JointPos Back_J(5.803, -60.054, -95.343, -204.6, -84.197, 0.0);
+    // JointPos Front_J(2.235,-86.579,-78.189,-195.23,-87.765, -0.0);
+    // JointPos Back_J(5.803, -60.054, -95.343, -204.6, -84.197, 0.0);
+    JointPos Back_J;
+    JointPos Front_J;
     DescPose Front_L(483.5, -93.3, 380.5, 90.0, 0.0, 90.0);
     DescPose Back_L(353.1, -93.314, 380.5, 90.0, 0.0,90.0);
     // R->send_moveJ(&Cup_APP);
@@ -263,11 +270,16 @@ int main(){
     // R->send_moveJ(&Cup1_APP_J);
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     int cnt = 5;
+    int type = 0;
+    int config = -1;
     while(cnt>0){
+        R->GetInverse(&Back_J, &Back_L);
         R->send_moveL(&Back_J, &Back_L);
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         R->open_gripper();
+        R->GetInverse(&Front_J, &Front_L);
         R->send_moveL(&Front_J, &Front_L);
+        
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         R->close_gripper();
         cnt--;
