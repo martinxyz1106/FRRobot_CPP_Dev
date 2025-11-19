@@ -1,6 +1,9 @@
 # FRRobot_CPP_Dev
 Fairino Robot Cpp Develop Code With SDK
 
+OS Version -- ! Window 11
+---
+
 
 File Tree
 1. fr3_gripper_test
@@ -13,3 +16,7 @@ How To Build Cpp
 Dependency
 - MinGw-64
 - Shlwapi
+
+
+Test Need!
+- in Ubuntu OS
